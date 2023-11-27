@@ -18,7 +18,9 @@ public class Movement : MonoBehaviour
 
     [Header("Shoot")]
     public float angle = 90;
+    private int dirangle = 0;
     public float power = 10;
+    private bool powering = false;
     [SerializeField] GameObject Bullet;
 
     [Header("GroundCheck")]
@@ -30,15 +32,34 @@ public class Movement : MonoBehaviour
     void Update()
     {
         player.velocity = new Vector2(horizontalmove*movespeed, player.velocity.y);
-        
+        Change_angle();
+        Force_up();
+        Reset_angle();
+    }
+
+    public void Move(InputAction.CallbackContext context)
+    {
+        horizontalmove = context.ReadValue<Vector2>().x;
+        //if the direction changes and it's not 0, actualize it
+        if (Mathf.Sign(context.ReadValue<Vector2>().x) != dir 
+                && (int) context.ReadValue<Vector2>().x != 0) 
+        {
+            angle *= -1;
+            dir *= -1;
+            dirangle *= -1;
+        }
+    }
+
+    private void Reset_angle()
+    {
         switch (dir)
         {
             case 1:
-                if (angle < 45) 
-                { 
+                if (angle < 45)
+                {
                     angle = 45;
                 }
-                else if (angle > 135) 
+                else if (angle > 135)
                 {
                     angle = 135;
                 }
@@ -54,25 +75,40 @@ public class Movement : MonoBehaviour
                 }
                 break;
             default:
-                print("error of direction");
+                print("direction error");
                 break;
         }
-
     }
 
-    public void Move(InputAction.CallbackContext context)
+    private void Change_angle()
     {
-        horizontalmove = context.ReadValue<Vector2>().x;
-        //if the direction changes and it's not 0, actualize it
-        if (Mathf.Sign(context.ReadValue<Vector2>().x) != dir 
-                && (int) context.ReadValue<Vector2>().x != 0) 
+        switch(dirangle)
         {
+            case 1:
+                angle += dir;
+                break;
+               
+            case -1:
+                angle -= dir;
+                break;
 
-            angle -= (180-angle);
-            dir *= -1;
+            default:
+                break;
         }
     }
 
+    private void Force_up()
+    {
+        if (powering)
+        {
+            power += 0.1f;
+        }
+        if (power > 20)
+        {
+            power = 20;
+            powering = false;
+        }
+    }
     public void Jump(InputAction.CallbackContext context)
     {
         if (IsGrounded())
@@ -88,21 +124,31 @@ public class Movement : MonoBehaviour
     {
         if (context.started)
         {
-
-            float x = Mathf.Cos((angle-90)* dir * Mathf.PI / 180);
-            float y = Mathf.Sin((angle-90)* dir * Mathf.PI / 180);
+            power = 0;
+            powering = true;
+        }
+        if (context.canceled || powering == false)
+        {
+            float x = Mathf.Cos((angle - 90) * dir * Mathf.PI / 180);
+            float y = Mathf.Sin((angle - 90) * Mathf.PI / 180);
             Vector3 direction = new Vector3(x * power, y * power, 0);
-            Vector3 spawn = new Vector3 (transform.position.x + x, transform.position.y + y, 0);  
+            Vector3 spawn = new Vector3(transform.position.x + x, transform.position.y + y, 0);
             GameObject proj = Instantiate(Bullet, spawn, transform.rotation);
-            proj.GetComponent<Move_bullet>().SetBullet((Vector3) direction);
+            proj.GetComponent<Move_bullet>().SetBullet((Vector3)direction);
+            powering = false;
+            power = 0;
         }
     }
 
     public void Aim(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.started)
         {
-            angle += (context.ReadValue<float>()*10)*-dir;
+            dirangle += (int)(context.ReadValue<float>()*10)*-dir;
+        }
+        if (context.canceled)
+        {
+            dirangle = 0;
         }
     }
     private bool IsGrounded() 
