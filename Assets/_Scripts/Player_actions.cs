@@ -30,7 +30,7 @@ public class Movement : MonoBehaviour
     public LayerMask GroundLayer;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         player.velocity = new Vector2(horizontalmove*movespeed, player.velocity.y);
         Change_angle();
@@ -148,7 +148,7 @@ public class Movement : MonoBehaviour
         proj.GetComponent<Move_bullet>().SetBullet((Vector3)direction);
         powering = false;
         power = 0;
-        camera.GetComponent<follow_player>().follow = proj;
+        //camera.GetComponent<follow_player>().follow = proj;
     }
 
     public void Aim(InputAction.CallbackContext context)
