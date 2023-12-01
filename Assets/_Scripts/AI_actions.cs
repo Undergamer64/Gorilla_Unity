@@ -18,6 +18,7 @@ public class AI_actions : MonoBehaviour
     public float angle = 90;
     public float power = 10;
     int dir;
+    bool detect = false;
     //private bool powering = false;
     [SerializeField] GameObject Bullet;
 
@@ -121,26 +122,44 @@ public class AI_actions : MonoBehaviour
 
     void Better_Search()
     {
-        bool detect = false;
         dir = Math.Sign(player.GetComponent<Rigidbody2D>().position.x - transform.position.x);
-        for (int i = 45*dir; i < 180*dir; i += dir)
+        switch (dir)
         {
-            angle = i;
-            detect = Try_angle();
-            if (detect)
-            {
+            case 1:
+                for (int i = 45; i < 180; i ++)
+                {
+                    angle = i;
+                    StartCoroutine(Try_angle());
+                    if (detect)
+                    {
+                        break;
+                    }
+                }
                 break;
-            }
+            case -1:
+                for (int i = -45; i > -180; i --)
+                {
+                    angle = i;
+                    StartCoroutine(Try_angle());
+                    if (detect)
+                    {
+                        break;
+                    }
+                }
+                break;
+
+            default:
+                break;
         }
         StartCoroutine(delay());
     }
 
-    private bool Try_angle()
+    IEnumerator Try_angle()
     {
-        bool detect = false;
+        detect = false;
         float power_max = 20;
         float power_min = 0;
-        for (int j = 0; j < 20; j++)
+        for (int j = 0; j < 10; j++)
         {
             float mid = (power_max + power_min) / 2;
             float x = Mathf.Cos((angle - 90) * dir * Mathf.PI / 180);
@@ -148,13 +167,13 @@ public class AI_actions : MonoBehaviour
             Vector2 velocity = new Vector2(x * mid, y * mid);
             Vector2 curpos = new Vector2(transform.position.x + x, transform.position.y + y);
             Vector2 lastpos = curpos;
-            Vector2 gravity = new Vector2(0, -9.80665f);
+            Vector2 gravity = new Vector2(0, -9.81f);
             while (!detect)
             {
                 curpos += velocity * Time.fixedDeltaTime;
                 velocity += gravity * Time.fixedDeltaTime;
                 Debug.DrawLine(lastpos, curpos);
-                var raycast = Physics2D.CircleCast(curpos, 0.25f, Vector2.zero);
+                var raycast = Physics2D.CircleCast(curpos, 0.40f, Vector2.zero);
                 if (raycast.collider)
                 {
                     if (raycast.collider != null)
@@ -199,7 +218,7 @@ public class AI_actions : MonoBehaviour
                 break;
             }
         }
-        return detect;
+        yield return null;
     }
     private void AI_Shoot(Vector3 spawn, Vector3 direction)
     {
