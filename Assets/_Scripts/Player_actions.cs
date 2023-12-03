@@ -32,7 +32,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        player.velocity = new Vector2(horizontalmove*movespeed, player.velocity.y);
+        player.velocity = new Vector2(horizontalmove*movespeed * Time.fixedDeltaTime*50, player.velocity.y);
         Change_angle();
         Force_up();
         if (!powering && power > 0)
@@ -90,11 +90,11 @@ public class Movement : MonoBehaviour
         switch(dirangle)
         {
             case 1:
-                angle += dir;
+                angle += dir * Time.fixedDeltaTime*50;
                 break;
                
             case -1:
-                angle -= dir;
+                angle -= dir * Time.fixedDeltaTime*50;
                 break;
 
             default:
@@ -106,7 +106,7 @@ public class Movement : MonoBehaviour
     {
         if (powering)
         {
-            power += 0.1f;
+            power += 0.1f*Time.fixedDeltaTime*50;
         }
         if (power > 20)
         {

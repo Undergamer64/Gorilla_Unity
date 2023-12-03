@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -126,7 +127,7 @@ public class AI_actions : MonoBehaviour
         switch (dir)
         {
             case 1:
-                for (int i = 45; i < 180; i ++)
+                for (int i = 90; i < 180; i ++)
                 {
                     angle = i;
                     StartCoroutine(Try_angle());
@@ -137,7 +138,7 @@ public class AI_actions : MonoBehaviour
                 }
                 break;
             case -1:
-                for (int i = -45; i > -180; i --)
+                for (int i = -90; i > -180; i --)
                 {
                     angle = i;
                     StartCoroutine(Try_angle());
@@ -159,7 +160,7 @@ public class AI_actions : MonoBehaviour
         detect = false;
         float power_max = 20;
         float power_min = 0;
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 5; j++)
         {
             float mid = (power_max + power_min) / 2;
             float x = Mathf.Cos((angle - 90) * dir * Mathf.PI / 180);
@@ -167,24 +168,32 @@ public class AI_actions : MonoBehaviour
             Vector2 velocity = new Vector2(x * mid, y * mid);
             Vector2 curpos = new Vector2(transform.position.x + x, transform.position.y + y);
             Vector2 lastpos = curpos;
-            Vector2 gravity = new Vector2(0, -9.81f);
+            Vector2 gravity = new Vector2(0, -9.8f);
+            int bounces = 5;
             while (!detect)
             {
-                curpos += velocity * Time.fixedDeltaTime;
                 velocity += gravity * Time.fixedDeltaTime;
+                curpos += velocity * Time.fixedDeltaTime;
                 Debug.DrawLine(lastpos, curpos);
-                var raycast = Physics2D.CircleCast(curpos, 0.40f, Vector2.zero);
+                var raycast = Physics2D.CircleCast(curpos, 0.25f, Vector2.zero);
                 if (raycast.collider)
                 {
                     if (raycast.collider != null)
                     {
                         if (raycast.collider.transform.tag == "Map")
                         {
-                            break;
+                            velocity = Vector2.Reflect(velocity, raycast.normal);
+                            velocity *= (-raycast.normal * 0.6f); 
+                            if (bounces <= 0)
+                            {
+                                break;
+                            }
+                            bounces -= 1;
                         }
                         else if (raycast.collider.transform.tag == "Player")
                         {
                             detect = true;
+                            print(mid);
                             AI_Shoot(new Vector2(transform.position.x + x, transform.position.y + y), new Vector2(x * mid, y * mid));
                         }
                     }
@@ -197,7 +206,7 @@ public class AI_actions : MonoBehaviour
                 {
                     power_min = mid;
                 }
-                else
+                else if (curpos.x > player.GetComponent<Rigidbody2D>().position.x)
                 {
                     power_max = mid;
                 }
@@ -208,7 +217,7 @@ public class AI_actions : MonoBehaviour
                 {
                     power_min = mid;
                 }
-                else
+                else if (curpos.x < player.GetComponent<Rigidbody2D>().position.x)
                 {
                     power_max = mid;
                 }
