@@ -555,6 +555,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 313ee669-14f0-4e7e-bdf3-26efcbf3c4cb
     m_ActionName: Player/Shoot[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 381783638}
+        m_TargetAssemblyTypeName: Movement, Assembly-CSharp
+        m_MethodName: Exit
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 95819b31-9164-4032-9ec6-530dfd8846ae
+    m_ActionName: Player/Exit[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

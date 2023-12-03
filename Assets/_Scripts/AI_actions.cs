@@ -170,6 +170,7 @@ public class AI_actions : MonoBehaviour
             Vector2 lastpos = curpos;
             Vector2 gravity = new Vector2(0, -9.8f);
             int bounces = 5;
+            int temp = 0;
             while (!detect)
             {
                 velocity += gravity * Time.fixedDeltaTime;
@@ -197,6 +198,11 @@ public class AI_actions : MonoBehaviour
                             AI_Shoot(new Vector2(transform.position.x + x, transform.position.y + y), new Vector2(x * mid, y * mid));
                         }
                     }
+                }
+                temp++;
+                if (temp >= 2000)
+                {
+                    break;
                 }
                 lastpos = curpos;
             }

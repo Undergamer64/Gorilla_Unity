@@ -1,5 +1,5 @@
 {
-    "name": "Player_actions",
+    "name": "Player_inputs",
     "maps": [
         {
             "name": "Player",
@@ -36,6 +36,15 @@
                     "name": "Shoot",
                     "type": "Button",
                     "id": "313ee669-14f0-4e7e-bdf3-26efcbf3c4cb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Exit",
+                    "type": "Button",
+                    "id": "95819b31-9164-4032-9ec6-530dfd8846ae",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -141,6 +150,17 @@
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c005e6e6-3a66-4c6c-a613-9341fcc636c6",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

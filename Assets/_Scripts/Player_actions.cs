@@ -42,6 +42,11 @@ public class Movement : MonoBehaviour
         Reset_angle();
     }
 
+    public void Exit(InputAction.CallbackContext context)
+    {
+        Application.Quit();
+    }
+
     public void Move(InputAction.CallbackContext context)
     {
         horizontalmove = context.ReadValue<Vector2>().x;
@@ -148,7 +153,7 @@ public class Movement : MonoBehaviour
         proj.GetComponent<Move_bullet>().SetBullet((Vector3)direction);
         powering = false;
         power = 0;
-        //camera.GetComponent<follow_player>().follow = proj;
+        camera.GetComponent<follow_player>().follow = proj;
     }
 
     public void Aim(InputAction.CallbackContext context)
